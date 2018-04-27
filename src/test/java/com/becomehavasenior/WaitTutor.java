@@ -17,7 +17,7 @@ public class WaitTutor {
     private final Object monitor = new Object();
     private int t1Counter = 0;
     private int t2Counter = 0;
-    private int maxCounter = 100;
+    private int maxCounter = 1000;
 
     class PrintThread implements Runnable {
         @Override
@@ -59,22 +59,18 @@ public class WaitTutor {
                 System.out.println(threadName + ":" + i);
                 synchronized (monitor) {
                     try {
-                        if (t1Counter == t2Counter) {
-                            //System.out.println(threadName + " stop at " + t1Counter);
-                            monitor.wait();
-                        }
                         if (n == 1) t1Counter = i;
                         if (n == 2) t2Counter = i;
                         monitor.notify();
                         Thread.yield();
                         if (n == 1) {
-                            if (i > t2Counter) {
+                            while (i > t2Counter) {
                                 System.out.println("t1 is ahead with i=" + i + ", wait for t2Counter=" + t2Counter);
                                 monitor.wait();
                             }
                         }
                         if (n == 2) {
-                            if (i > t1Counter) {
+                            while (i > t1Counter) {
                                 System.out.println("t2 is ahead with i=" + i + ", wait for t1Counter=" + t1Counter);
                                 monitor.wait();
                             }
