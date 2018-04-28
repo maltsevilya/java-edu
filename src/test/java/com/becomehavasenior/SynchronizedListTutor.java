@@ -26,8 +26,8 @@ public class SynchronizedListTutor {
                     "Python", "JavaScript", "ActionScript", "Clojure", "Groovy",
                     "Ruby", "C++"};
 
-    List<String> randomLangs = new ArrayList<>();
-//    Collection<String> randomLangs = new ArrayBlockingQueue<String>(100*100000);
+//    List<String> randomLangs = new ArrayList<>();
+    Collection<String> randomLangs = new ArrayBlockingQueue<String>(100*10);
 
     public String getRandomLangs() {
         int index = (int)(Math.random()*langs.length);
@@ -44,9 +44,11 @@ public class SynchronizedListTutor {
         @Override
         public void run() {
 //            for (int i = 0; i < 100000; i++) {
-            for (int i = 0; i < 10; i++) {
-                randomLangs.add(getRandomLangs());
-                print(randomLangs);
+            for (int i = 0; i < 100; i++) {
+//                synchronized (randomLangs) {
+                    randomLangs.add(getRandomLangs());
+                    print(randomLangs);
+//                }
             }
 //            List<String> res = new ArrayList<>(100000);
 //            for (int i=0;i<100000;i++) {
@@ -88,7 +90,7 @@ public class SynchronizedListTutor {
             e.printStackTrace();
         }
         long end = System.nanoTime();
-        BigDecimal bd = new BigDecimal((end - start)/1.0e9).round(new MathContext(4, RoundingMode.CEILING));
+        BigDecimal bd = new BigDecimal((end - start)/1.0e9).round(new MathContext(4, RoundingMode.HALF_EVEN));
         System.out.println("Time: " + bd + " sec");
         randomLangs.stream().limit(1000).forEach(System.out::print);
 //        print(new ArrayList<>(randomLangs).subList(0, 10000));
